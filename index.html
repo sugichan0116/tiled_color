@@ -78,7 +78,18 @@
         let text = "亜アAa0";
 
         for (let name in graduations) {
-          let encoded = $("<div>").append($("<h3>").html(name));
+          let encoded = $("<div>");
+
+          encoded.append($("<h3>", {
+            html: name,
+            css: { "color": "gray" }
+          })
+          .on("click", function () {
+            let copy = '"' + graduations[name].join('", "') + '"';
+            $(this).html(copy);
+            execCopy(copy);
+          }));
+
           for (var i = 0; i < graduations[name].length; i++) {
             encoded.append($("<div>", {
               class: "pc",
@@ -86,8 +97,9 @@
               html: text
             })
             .on("click", function () {
-              $(this).html(rgb2hex($(this).css("background-color")));
-              execCopy($(this).html());
+              let copy = rgb2hex($(this).css("background-color"));
+              $(this).html(copy);
+              execCopy(copy);
             }));
           }
           console.log(encoded);
