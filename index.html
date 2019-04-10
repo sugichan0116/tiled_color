@@ -66,7 +66,6 @@
            return result;
          }
 
-
         let graduations = {
           "default" : ["#E49AAB", "#FF9E7B", "#FFC98B", "#F7DB70", "#BFD586", "#80BEAF",
                        "#75CCE8", "#939CE7", "#CCB1EA"],
@@ -113,6 +112,10 @@
 
       });
     </script>
-
+    <div>
+      <h4 style="color:gray">opacity</h4>
+      <input type="range" value="1" min="0" max="1" step="0.1"
+        oninput="$('.pc').css('opacity', this.value);">
+    </div>
   </body>
 </html>
