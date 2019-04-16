@@ -8,18 +8,50 @@
   </head>
   <body>
     <style media="screen">
-      div.pc{
+      div.content{
         display: inline-block;
         width: 100px;
         height: 100px;
         text-align: center;
         line-height: 100px;
         margin: 10px;
+      }
+      div.fill{
         color: white;
-        opacity: 1;
+        outline: solid 2px white;
+      }
+      div.stroke{
+        background-color: white;
+        outline-width: 2px;
+        outline-style: solid;
+      }
+      div.trans{
+        background-color: rgba(0, 0, 0, 0.5);
+        outline-width: 2px;
+        outline-style: solid;
+      }
+      div.black{
+        background-color: rgba(0, 0, 0, 0.5);
+        outline-width: 2px;
+        outline-style: solid;
+      }
+      div.trans{
+        background-color: transparent;
+        outline-width: 2px;
+        outline-style: solid;
+      }
+      h4, h3{
+        color: white;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 10px 10px 10px 30px;
+      }
+      body{
+        background-image: url("https://www.wonderopolis.org/wp-content/uploads/2016/03/dreamstime_xl_29145222_(Custom).jpg");
       }
     </style>
     <script type="text/javascript">
+      let BoxShadow;
       $(function() {
         var hexDigits = new Array
         ("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F");
@@ -84,8 +116,7 @@
           let encoded = $("<div>");
 
           encoded.append($("<h3>", {
-            html: name,
-            css: { "color": "gray" }
+            html: name
           })
           .on("click", function () {
             let copy = '"' + graduations[name].join('", "') + '"';
@@ -93,29 +124,77 @@
             execCopy(copy);
           }));
 
+          styles = [
+            {
+              "class": "fill",
+              "css": ["background-color"],
+              "color-ref": "background-color"
+            },
+            {
+              "class": "stroke",
+              "css": ["color", "outline-color"],
+              "color-ref": "color"
+            },
+            {
+              "class": "black",
+              "css": ["color", "outline-color"],
+              "color-ref": "color"
+            },
+            {
+              "class": "trans",
+              "css": ["color", "outline-color"],
+              "color-ref": "color"
+            }
+          ];
+
           for (var i = 0; i < graduations[name].length; i++) {
-            encoded.append($("<div>", {
-              class: "pc",
-              css: { "background-color" : graduations[name][i] },
-              html: text
-            })
-            .on("click", function () {
-              let copy = rgb2hex($(this).css("background-color"));
-              $(this).html(copy);
-              execCopy(copy);
-            }));
+            styles.forEach(function (style) {
+              let css = {};
+              style["css"].forEach(function (value) {
+                css[value] = graduations[name][i];
+              });
+
+              encoded.append($("<div>", {
+                class: "content " + style["class"],
+                css: css,
+                html: text
+              })
+              .on("click", function () {
+                let copy = rgb2hex($(this).css(style["color-ref"]));
+                $(this).html(copy);
+                execCopy(copy);
+              }));
+            });
           }
+
           console.log(encoded);
           $("body").append(encoded);
+
+          BoxShadow = function (value) {
+            let style = [
+              "",
+              "10px 10px",
+              "10px 10px 10px rgba(0,0,0,0.4)",
+              "10px 10px 10px 10px rgba(0,0,0,0.4) inset"
+            ];
+
+            $('.content').css('box-shadow', style[value]);
+          };
 
         }
 
       });
     </script>
     <div>
-      <h4 style="color:gray">opacity</h4>
+      <h4>background image</h4>
+      <input type="text"
+        oninput="$('body').css('background-image', 'url(' + this.value +')');">
+      <h4>opacity</h4>
       <input type="range" value="1" min="0" max="1" step="0.1"
-        oninput="$('.pc').css('opacity', this.value);">
+        oninput="$('.content').css('opacity', this.value);">
+      <h4>box shadow</h4>
+      <input type="range" value="0" min="0" max="3" step="1"
+        oninput="BoxShadow(this.value)">
     </div>
   </body>
 </html>
